@@ -42,8 +42,8 @@ export const subscribeToOrgSettings = (organizationId, callback) => {
       } else {
         // Fallback in-memory defaults without writing to Firestore
         callback({
-          companyName: 'Match-Bot',
-          botName: 'Match-Bot',
+          companyName: 'Your Company Name',
+          botName: 'Your Bot Name',
           welcomeMessage: 'Greetings agent. How can I assist you?',
           whatsappNumber: '1234567890',
           themeColor: '#39FF14'
