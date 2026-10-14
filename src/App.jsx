@@ -7,7 +7,11 @@ import { auth } from './firebase';
 import { getUserOrganizationId, subscribeToOrgSettings } from './services/organizationService';
 import { subscribeToOrgKeywords } from './services/keywordService';
 import AdminDashboard from './components/AdminDashboard';
+import SuperAdminDashboard from './components/SuperAdminDashboard';
 import ChatWidget from './components/ChatWidget';
+
+// Define your single designated Super Admin email
+const SUPER_ADMIN_EMAIL = "superadmin@yourcompany.com";
 
 export default function App() {
   const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'admin'
@@ -104,12 +108,12 @@ export default function App() {
       setIsAdminAuthenticated(isPasswordAuth);
 
       if (firebaseUser) {
-        if (isPasswordAuth) {
-          // If logged in as Admin, resolve assigned organization ID from `users` collection
+        if (isPasswordAuth && firebaseUser.email !== SUPER_ADMIN_EMAIL) {
+          // If logged in as Client Admin, resolve assigned organization ID from `users` collection[cite: 3]
           const orgId = await getUserOrganizationId(firebaseUser.uid);
           setActiveOrgId(orgId);
         } else {
-          // Public visitor: use URL query parameter or default tenant
+          // Public visitor or Super Admin
           const urlOrg = getOrgIdFromUrl();
           setActiveOrgId(urlOrg || 'default_tenant');
         }
@@ -145,7 +149,7 @@ export default function App() {
       await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
       setAdminEmail('');
       setAdminPassword('');
-      setCurrentView('admin'); // Explicitly transition to admin view upon successful auth
+      setCurrentView('admin'); // Explicitly transition to admin view upon successful auth[cite: 1]
       triggerAudioEffect('success');
     } catch (error) {
       setLoginError("Invalid admin credentials.");
@@ -159,6 +163,8 @@ export default function App() {
     setCurrentView("landing");
     triggerAudioEffect("keystroke");
   };
+
+  const isSuperAdmin = user?.email === SUPER_ADMIN_EMAIL;
 
   return (
     <div className="min-h-screen bg-[#050505] text-[#39FF14] font-mono flex flex-col selection:bg-[#39FF14] selection:text-black relative overflow-x-hidden">
@@ -177,10 +183,10 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-wider uppercase text-white flex items-center gap-2">
-                {orgSettings?.companyName || 'NEO-GEN'} <span className="text-[#39FF14] text-xs px-2 py-0.5 border border-[#39FF14] rounded bg-black/40">SaaS v3.0</span>
+                {isSuperAdmin ? 'SUPER ADMIN PORTAL' : (orgSettings?.companyName || 'KEYBOT')} <span className="text-[#39FF14] text-xs px-2 py-0.5 border border-[#39FF14] rounded bg-black/40">SaaS v3.0</span>
               </h1>
               <p className="text-[10px] text-zinc-400 tracking-widest uppercase">
-                Active Tenant: <span className="text-[#39FF14]">{activeOrgId || 'Loading...'}</span>
+                {isSuperAdmin ? 'Global Control Center' : `Active Tenant: ${activeOrgId || 'Loading...'}`}
               </p>
             </div>
           </div>
@@ -222,7 +228,7 @@ export default function App() {
         {globalLoading && (
           <div className="flex-1 flex flex-col justify-center items-center gap-3 py-20">
             <div className="w-12 h-12 rounded border-2 border-t-transparent border-[#39FF14] animate-spin"></div>
-            <p className="text-xs tracking-widest uppercase text-[#39FF14]/70 animate-pulse">Initializing Tenant Context...</p>
+            <p className="text-xs tracking-widest uppercase text-[#39FF14]/70 animate-pulse">Initializing System Context...</p>
           </div>
         )}
 
@@ -232,13 +238,13 @@ export default function App() {
             <div className="relative overflow-hidden rounded-xl bg-zinc-950/60 backdrop-blur-md border border-[#39FF14]/30 p-8 lg:p-12 shadow-[0_0_30px_rgba(57,255,20,0.05)]">
               <div className="max-w-3xl">
                 <span className="inline-block text-xs uppercase px-3 py-1 border border-[#39FF14]/40 bg-[#39FF14]/10 rounded mb-4 tracking-widest text-[#39FF14] font-semibold">
-                  Tenant: {activeOrgId}
+                  Tenant Node: {activeOrgId}
                 </span>
                 <h2 className="text-3xl lg:text-5xl font-black uppercase text-white tracking-tight mb-4">
-                  {orgSettings?.companyName || 'NEO-GEN'} <span className="text-[#39FF14]">ASSISTANT</span>
+                  {orgSettings?.companyName || 'KEYBOT'} <span className="text-[#39FF14]">SUPPORT PORTAL</span>
                 </h2>
                 <p className="text-zinc-300 text-sm md:text-base leading-relaxed mb-6">
-                  Welcome to the official support portal for {orgSettings?.companyName || 'our company'}. Ask questions or interact with our tactical AI assistant in the lower right floating window.
+                  Welcome to the official support portal for {orgSettings?.companyName || 'our company'}. Ask questions or interact with our automated assistant in the lower right floating window.
                 </p>
               </div>
             </div>
@@ -257,7 +263,7 @@ export default function App() {
                 <Layers className="w-6 h-6 text-[#39FF14] mb-3" />
                 <h3 className="text-lg font-bold text-white uppercase mb-2">Multi-Tenant Routing</h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
-                  Easily embed or share your unique link (<code className="text-[#39FF14]">?org={activeOrgId}</code>) to serve custom responses to your visitors.
+                  Easily embed or share your unique link (<code className="text-[#39FF14]">?org={activeOrgId}</code>) to serve custom responses to visitors.
                 </p>
               </div>
 
@@ -282,7 +288,7 @@ export default function App() {
                     <Lock className="w-8 h-8 animate-pulse" />
                   </div>
                   <h3 className="text-xl font-bold uppercase tracking-wider text-white">Admin Authentication</h3>
-                  <p className="text-xs text-zinc-400 mt-1 uppercase tracking-widest">SaaS Multi-Tenant Portal</p>
+                  <p className="text-xs text-zinc-400 mt-1 uppercase tracking-widest">Multi-Tenant Portal Login</p>
                 </div>
 
                 <form onSubmit={handleAdminLogin} className="space-y-4">
@@ -321,12 +327,18 @@ export default function App() {
                     className="w-full py-3 rounded bg-[#39FF14] hover:bg-emerald-400 text-black font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-2"
                   >
                     <Unlock className="w-4 h-4" />
-                    Authenticate Admin
+                    Authenticate Access
                   </button>
                 </form>
               </div>
+            ) : isSuperAdmin ? (
+              /* SUPER ADMIN GLOBAL DASHBOARD */
+              <SuperAdminDashboard
+                onLogout={handleLogout}
+                triggerAudioEffect={triggerAudioEffect}
+              />
             ) : (
-              /* DEDICATED ADMIN DASHBOARD COMPONENT */
+              /* CLIENT TENANT ADMIN DASHBOARD */
               <AdminDashboard
                 organizationId={activeOrgId}
                 orgSettings={orgSettings}
@@ -343,16 +355,18 @@ export default function App() {
       {/* FOOTER */}
       <footer className="border-t border-zinc-900 bg-black/40 py-6 text-center text-[11px] text-zinc-500 select-none font-mono">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="uppercase tracking-widest">© 2026 {orgSettings?.companyName || 'SaaS Cybernetics'} // MULTI-TENANT ARCHITECTURE</p>
+          <p className="uppercase tracking-widest">© 2026 {orgSettings?.companyName || 'KeyBot SaaS'} // MULTI-TENANT ARCHITECTURE</p>
           <p className="text-zinc-600">ISOLATED TENANT ENDPOINTS ACTIVE</p>
         </div>
       </footer>
 
       {/* FLOATING CHAT WIDGET (DELEGATED TO CUSTOM TENANT) */}
-      <ChatWidget
-        organizationId={activeOrgId}
-        triggerAudioEffect={triggerAudioEffect}
-      />
+      {!isSuperAdmin && (
+        <ChatWidget
+          organizationId={activeOrgId}
+          triggerAudioEffect={triggerAudioEffect}
+        />
+      )}
 
     </div>
   );
