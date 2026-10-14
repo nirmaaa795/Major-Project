@@ -9,7 +9,7 @@ export default function ChatWidget({ organizationId, triggerAudioEffect }) {
   const [keywordsList, setKeywordsList] = useState([]);
   const [settings, setSettings] = useState({
     botName: 'Match-Bot',
-    companyName: 'Neo-Gen Cybernetics',
+    companyName: 'Match-Bot',
     welcomeMessage: 'Greetings agent. How can I assist you?',
     whatsappNumber: '1234567890'
   });

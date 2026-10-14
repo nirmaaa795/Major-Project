@@ -183,7 +183,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-wider uppercase text-white flex items-center gap-2">
-                {isSuperAdmin ? 'SUPER ADMIN PORTAL' : (orgSettings?.companyName || 'KEYBOT')} <span className="text-[#39FF14] text-xs px-2 py-0.5 border border-[#39FF14] rounded bg-black/40">SaaS v3.0</span>
+                {isSuperAdmin ? 'SUPER ADMIN PORTAL' : (orgSettings?.companyName || 'Match-BotT')} <span className="text-[#39FF14] text-xs px-2 py-0.5 border border-[#39FF14] rounded bg-black/40">SaaS v3.0</span>
               </h1>
               <p className="text-[10px] text-zinc-400 tracking-widest uppercase">
                 {isSuperAdmin ? 'Global Control Center' : `Active Tenant: ${activeOrgId || 'Loading...'}`}
@@ -241,7 +241,7 @@ export default function App() {
                   Tenant Node: {activeOrgId}
                 </span>
                 <h2 className="text-3xl lg:text-5xl font-black uppercase text-white tracking-tight mb-4">
-                  {orgSettings?.companyName || 'KEYBOT'} <span className="text-[#39FF14]">SUPPORT PORTAL</span>
+                  {orgSettings?.companyName || 'Match-Bot'} <span className="text-[#39FF14]">SUPPORT PORTAL</span>
                 </h2>
                 <p className="text-zinc-300 text-sm md:text-base leading-relaxed mb-6">
                   Welcome to the official support portal for {orgSettings?.companyName || 'our company'}. Ask questions or interact with our automated assistant in the lower right floating window.
@@ -355,7 +355,7 @@ export default function App() {
       {/* FOOTER */}
       <footer className="border-t border-zinc-900 bg-black/40 py-6 text-center text-[11px] text-zinc-500 select-none font-mono">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="uppercase tracking-widest">© 2026 {orgSettings?.companyName || 'KeyBot SaaS'} // MULTI-TENANT ARCHITECTURE</p>
+          <p className="uppercase tracking-widest">© 2026 {orgSettings?.companyName || 'Match-Bot SaaS'} // MULTI-TENANT ARCHITECTURE</p>
           <p className="text-zinc-600">ISOLATED TENANT ENDPOINTS ACTIVE</p>
         </div>
       </footer>

@@ -10,7 +10,7 @@ export default function Settings({ organizationId, currentSettings, triggerAudio
 
   useEffect(() => {
     if (currentSettings) {
-      setCompanyName(currentSettings.companyName || 'Neo-Gen Cybernetics');
+      setCompanyName(currentSettings.companyName || 'Match-Bot');
       setBotName(currentSettings.botName || 'Match-Bot');
       setWhatsappNumber(currentSettings.whatsappNumber || '1234567890');
     }
