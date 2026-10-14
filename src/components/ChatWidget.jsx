@@ -8,8 +8,8 @@ export default function ChatWidget({ organizationId, triggerAudioEffect }) {
   const [userChatMessage, setUserChatMessage] = useState('');
   const [keywordsList, setKeywordsList] = useState([]);
   const [settings, setSettings] = useState({
-    botName: 'Match-Bot',
-    companyName: 'Match-Bot',
+    botName: 'Your Bot Name',
+    companyName: 'Your Company Name',
     welcomeMessage: 'Greetings agent. How can I assist you?',
     whatsappNumber: '1234567890'
   });
