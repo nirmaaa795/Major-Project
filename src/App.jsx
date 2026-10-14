@@ -11,7 +11,7 @@ import SuperAdminDashboard from './components/SuperAdminDashboard';
 import ChatWidget from './components/ChatWidget';
 
 // Define your single designated Super Admin email
-const SUPER_ADMIN_EMAIL = "superadmin@yourcompany.com";
+const SUPER_ADMIN_EMAIL = "nirmallouis7@gmail.com";
 
 export default function App() {
   const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'admin'
